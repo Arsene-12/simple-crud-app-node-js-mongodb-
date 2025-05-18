@@ -5,7 +5,10 @@ const task=require('../models/taskmodel.js');
 const addtask = async (req,res)=>{
   try{
     const task_save=await task.create(req.body);
-    res.status(200).json(task_save);
+    res.status(200).json({
+      status: true,
+      message: 'Task Recorded Successfully!'
+    })
   }
   catch(error){
     res.status(500).json(console.error(error.message));
@@ -38,11 +41,11 @@ const findtaskbyid = async (req,res)=>{
 //update data in the database
 const updatetask = async (req,res)=>{
   try{
-    const {id} =req.params;
-    const task_update = await task.findByIdAndUpdate(id,req.body);
+    const {description, time} = req.body;
+    const task_update = await task.findByIdAndUpdate(req.params.id,{ description, time });
 
    if(!task_update){
-      return res.status(200).json({message:'task not found '});
+      return res.status(404).json({message:'task not found '});
    }
 
     res.status(200).json(task_update);
@@ -53,7 +56,6 @@ const updatetask = async (req,res)=>{
 }
 
 //delete task in the database
-
 const deletetask = async (req,res)=>{
    try{
      const {id} = req.params;
